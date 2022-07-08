@@ -10,7 +10,7 @@ const currentTempEl = document.getElementById('current-temp');
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const API_KEY ='49cc8c821cd2aff9af04c9f98c36eb74';
+const API_KEY ='18776003f0a6722c1fdffad368e82d6b';
 
 setInterval(() => {
     const time = new Date();
@@ -29,6 +29,7 @@ setInterval(() => {
 }, 1000);
 
 getWeatherData()
+/*
 function getWeatherData () {
     navigator.geolocation.getCurrentPosition((success) => {
         
@@ -42,6 +43,42 @@ function getWeatherData () {
 
     })
 }
+*/
+function GottheLocation(Position){
+    let {latitude, longitude } = Position.coords;
+    
+    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`).then(response => response.json()).then(data => {
+
+        console.log(data)
+        showWeatherData(data);
+        })
+
+}
+
+
+function errorHandler(err) {
+    if(err.code == 1) {
+       alert("Error: Access is denied!");
+    } else if( err.code == 2) {
+       alert("Error: Position is unavailable!");
+    }
+ }
+
+function getWeatherData(){
+if(navigator.geolocation){
+    var options = {timeout: 120000, EnableHighAccuracy: true};
+    navigator.geolocation.getCurrentPosition(GottheLocation, errorHandler, options);
+}
+else{
+    alert('Your browser does not support geolocation');
+}
+}
+
+
+
+
+
+
 
 function showWeatherData (data){
     let {humidity, pressure, sunrise, sunset, wind_speed} = data.current;
